@@ -13,8 +13,11 @@ const appSlice = createSlice({
     toggleDarkMode: (state) => {
       state.isDarkMode = !state.isDarkMode;
     },
+    closeMenu: (state) => {
+      state.isMenuOpen = false;
+    },
   },
 });
 
-export const { toggleMenu, toggleDarkMode } = appSlice.actions;
+export const { toggleMenu, toggleDarkMode, closeMenu } = appSlice.actions;
 export default appSlice.reducer;

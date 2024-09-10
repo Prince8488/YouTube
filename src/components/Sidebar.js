@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const isMenuOpen = useSelector((store) => store.app.isMenuOpen);
@@ -10,6 +11,34 @@ const Sidebar = () => {
         <div className="fixed left-0 top-24 w-56 shadow h-full p-3 flex max-sm:hidden">
           <div className="p-3 pt-0 w-full">
             <ul className="w-full">
+              <li className="flex text-black dark:text-white pl-0 p-2  hover:bg-gray-100 hover:rounded-2xl dark:hover:bg-gray-600 dark:hover:rounded-2xl">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  enableBackground="new 0 0 24 24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  focusable="false"
+                  aria-hidden="true"
+                  className="mr-4"
+                >
+                  <g>
+                    {isDarkMode && (
+                      <path
+                        fill="white"
+                        d="M4 21V10.08l8-6.96 8 6.96V21h-6v-6h-4v6H4z"
+                      ></path>
+                    )}
+                    {!isDarkMode && (
+                      <path
+                        fill="black"
+                        d="M4 21V10.08l8-6.96 8 6.96V21h-6v-6h-4v6H4z"
+                      ></path>
+                    )}
+                  </g>
+                </svg>
+                Home
+              </li>
               <li className="flex text-black dark:text-white pl-0 p-2  hover:bg-gray-100 hover:rounded-2xl dark:hover:bg-gray-600 dark:hover:rounded-2xl">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

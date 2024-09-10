@@ -23,3 +23,8 @@
 - Extracted Movie and display to card
 - Create constant hardcord value
 - Responsive Mobile view
+- Installed react-router-dom
+- Provide routes to app
+- Create link for video
+- Extract videos id from URL using searchquery param hook
+- Display video dynamically.
