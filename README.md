@@ -29,3 +29,9 @@
 - Extract videos id from URL using searchquery param hook
 - Display video dynamically
 - Higher Order Function
+- Create nexted comments
+- Create Live chat using dynamic name and message
+- Create helper for live chat data
+- Store search result in slice for better performance
+- Store 10 live chat and delete the older one from slice
+- Implemented API suggestion

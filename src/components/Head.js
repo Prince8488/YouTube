@@ -1,10 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleDarkMode, toggleMenu } from "../utils/appSlice";
+import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import { cacheResults } from "../utils/serchSlice";
 
 const Head = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [userProfile, setUserProfile] = useState(false);
+  const [suggestion, setSuggestion] = useState([]);
+  const [showSuggestion, setShowSuggestion] = useState(false);
+
+  const searchcache = useSelector((store) => store.search);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchcache[searchQuery]) {
+        setSuggestion(searchcache[searchQuery]);
+      } else {
+        fetchAPiSuggestion();
+      }
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const fetchAPiSuggestion = async () => {
+    const fetchApi = await fetch(YOUTUBE_SEARCH_API + searchQuery);
+    const json = await fetchApi.json();
+    setSuggestion(json[1]);
+    dispatch(cacheResults({ [searchQuery]: json[1] }));
+  };
   const isDarkMode = useSelector((store) => store.app.isDarkMode);
   const handleMenuhandler = () => {
     dispatch(toggleMenu());
@@ -18,6 +43,7 @@ const Head = () => {
   const handleUserProfile = () => {
     setUserProfile(!userProfile);
   };
+
   return (
     <div className=" fixed bg-white dark:bg-black z-50 w-full top-0 left-0 grid grid-flow-col p-2 max-sm:shadow">
       <div className="flex col-span-1">
@@ -166,42 +192,59 @@ const Head = () => {
           </svg>
         </div>
       </div>
-      <div className="flex col-span-10 justify-center m-2 max-sm:hidden">
-        <input
-          type="text"
-          placeholder="Search"
-          className=" w-1/2 border border-gray-400 p-2 rounded-l-full dark:bg-black dark:placeholder:text-gray-400 placeholder:ml-4 dark:text-white"
-        />
-        <button className="border border-gray-400 p-2 rounded-r-full dark:bg-gray-900">
-          <div className="w-10" alt="serach">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              height="24"
-              viewBox="0 0 24 24"
-              width="24"
-              focusable="false"
-              aria-hidden="true"
-            >
-              {isDarkMode && (
-                <path
-                  clipRule="evenodd"
-                  fill="white"
-                  d="M16.296 16.996a8 8 0 11.707-.708l3.909 3.91-.707.707-3.909-3.909zM18 11a7 7 0 00-14 0 7 7 0 1014 0z"
-                  fillRule="evenodd"
-                ></path>
-              )}
-              {!isDarkMode && (
-                <path
-                  fill="black"
-                  clipRule="evenodd"
-                  d="M16.296 16.996a8 8 0 11.707-.708l3.909 3.91-.707.707-3.909-3.909zM18 11a7 7 0 00-14 0 7 7 0 1014 0z"
-                  fillRule="evenodd"
-                ></path>
-              )}
-            </svg>
+      <div className="">
+        <div className="relative flex col-span-10 justify-center m-2 max-sm:hidden">
+          <input
+            type="text"
+            placeholder="Search"
+            className=" w-1/2 border border-gray-400 p-2 rounded-l-full dark:bg-black dark:placeholder:text-gray-400 placeholder:ml-4 dark:text-white"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestion(true)}
+            onBlur={() => setShowSuggestion(false)}
+          />
+          <button className="border border-gray-400 p-2 rounded-r-full dark:bg-gray-900">
+            <div className="w-10" alt="serach">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+                focusable="false"
+                aria-hidden="true"
+              >
+                {isDarkMode && (
+                  <path
+                    clipRule="evenodd"
+                    fill="white"
+                    d="M16.296 16.996a8 8 0 11.707-.708l3.909 3.91-.707.707-3.909-3.909zM18 11a7 7 0 00-14 0 7 7 0 1014 0z"
+                    fillRule="evenodd"
+                  ></path>
+                )}
+                {!isDarkMode && (
+                  <path
+                    fill="black"
+                    clipRule="evenodd"
+                    d="M16.296 16.996a8 8 0 11.707-.708l3.909 3.91-.707.707-3.909-3.909zM18 11a7 7 0 00-14 0 7 7 0 1014 0z"
+                    fillRule="evenodd"
+                  ></path>
+                )}
+              </svg>
+            </div>
+          </button>
+        </div>
+        {showSuggestion && suggestion.length > 0 && (
+          <div className="absolute bg-white dark:bg-black dark:text-white ml-20 px-5 py-2 w-1/4 shadow-lg rounded-lg border border-gray-100">
+            <ul>
+              {suggestion.map((item) => (
+                <li className="py-2 shadow-sm hover:bg-gray-100" key={item}>
+                  🔍 {item}
+                </li>
+              ))}
+            </ul>
           </div>
-        </button>
+        )}
       </div>
       <div className="flex col-span-1  max-sm:justify-end">
         <div
